@@ -202,11 +202,6 @@
       <HintPath>$(UnityPath)\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Postprocessing.Runtime">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(UnityPath)\Unity.Postprocessing.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
    
     <Reference Include="UnityEngine.TerrainModule">
       <SpecificVersion>False</SpecificVersion>
