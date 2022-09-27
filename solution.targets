@@ -69,6 +69,11 @@
       <HintPath>$(BepInExPath)\core\Il2CppInterop.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Il2CppInterop.Common">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(BepInExPath)\core\Il2CppInterop.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 
   <!-- Add game references -->
@@ -101,6 +106,11 @@
     <Reference Include="Meta">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ManagedDataPath)\Meta.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ManagedDataPath)\Google.Protobuf.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

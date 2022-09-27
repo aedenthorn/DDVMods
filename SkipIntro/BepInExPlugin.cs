@@ -1,28 +1,30 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
-using Definitions;
+using Definitions.Items;
 using HarmonyLib;
+using Il2CppSystem;
+using Mdl;
+using Mdl.Avatar;
+using Mdl.Navigation;
+using Meta;
 using System.Reflection;
 using UnityEngine;
 
-namespace InfiniteMana
+namespace SkipIntro
 {
-    [BepInPlugin("aedenthorn.InfiniteMana", "InfiniteMana", "0.1.0")]
+    [BepInPlugin("aedenthorn.SkipIntro", "SkipIntro", "0.1.0")]
     public class BepInExPlugin : BasePlugin
     {
         public static ConfigEntry<bool> modEnabled;
         public static ConfigEntry<bool> isDebug;
-        public static ConfigEntry<int> nexusID;
 
         public static BepInExPlugin context;
-        public static void Dbgl(string str = "")
+        public static void Dbgl(string str = "", bool pref = true)
         {
             if (isDebug.Value)
-                context.Log.LogInfo(str);
+                Debug.Log((pref ? typeof(BepInExPlugin).Namespace + " " : "") + str);
         }
-
-        public static bool pressedKey = false;
 
         public override void Load()
         {
@@ -33,15 +35,16 @@ namespace InfiniteMana
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), null);
             Dbgl("mod loaded");
         }
-        [HarmonyPatch(typeof(ManaData), nameof(ManaData.GetManaCost))]
-        static class ManaData_GetManaCost_Patch
+
+        [HarmonyPatch(typeof(Startup), nameof(Startup.DoFadeIn))]
+        static class Startup_DoFadeIn_Patch
         {
-            static bool Prefix(ref int __result)
+            static void Prefix(ref bool skipIntroSequence)
             {
                 if (!modEnabled.Value)
-                    return true;
-                __result = 0;
-                return false;
+                    return;
+                Dbgl("skipping intro");
+                skipIntroSequence = true;
             }
         }
     }

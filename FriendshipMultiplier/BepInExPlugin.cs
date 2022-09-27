@@ -7,14 +7,13 @@ using Meta;
 using System.Reflection;
 using UnityEngine;
 
-namespace CurrencyMultiplier
+namespace ExpMultiplier
 {
-    [BepInPlugin("aedenthorn.CurrencyMultiplier", "CurrencyMultiplier", "0.2.1")]
+    [BepInPlugin("aedenthorn.FriendshipMultiplier", "FriendshipMultiplier", "0.1.0")]
     public class BepInExPlugin : BasePlugin
     {
         public static ConfigEntry<bool> modEnabled;
         public static ConfigEntry<bool> isDebug;
-        public static ConfigEntry<bool> preventLoss;
         public static ConfigEntry<float> multiplier;
 
         public static BepInExPlugin context;
@@ -31,34 +30,19 @@ namespace CurrencyMultiplier
             context = this;
             modEnabled = Config.Bind("General", "Enabled", true, "Enable this mod");
             isDebug = Config.Bind<bool>("General", "IsDebug", true, "Enable debug logs");
-            multiplier = Config.Bind<float>("General", "Multiplier", 10f, "Multiply currency by this amount");
-            preventLoss = Config.Bind<bool>("General", "PreventLoss", false, "Prevent loss of currency");
+            multiplier = Config.Bind<float>("Options", "Multiplier", 10f, "Multiply friendship gains by this amount");
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), null);
             Dbgl("mod loaded");
         }
-        [HarmonyPatch(typeof(ProfilePlayer), nameof(ProfilePlayer.AddCurrency))]
-        static class ProfilePlayer_AddCurrency_Patch
+        //[HarmonyPatch(typeof(Character), nameof(Character.AddFriendship))]
+        static class Character_AddFriendship_Patch
         {
-            static void Prefix(Item currency, ref int amount)
+            static void Prefix(ref int amount)
             {
                 if (!modEnabled.Value)
                     return;
-                Dbgl($"Adding {amount} {currency.ItemID}, {currency.Index}");
-                if (amount < 0)
-                {
-                    if (preventLoss.Value)
-                    {
-                        Dbgl("resetting loss to 0");
-                        amount = 0;
-                    }
-                    return;
-                }
-                if (currency.ItemID == 80100000)
-                {
-                    Dbgl("Not modifying moonstone amounts");
-                    return;
-                }
+                Dbgl($"Adding {amount} friendship");
                 amount = Mathf.RoundToInt(amount * multiplier.Value);
             }
         }
