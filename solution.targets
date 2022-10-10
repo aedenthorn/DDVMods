@@ -113,6 +113,26 @@
       <HintPath>$(ManagedDataPath)\Google.Protobuf.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Localization.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ManagedDataPath)\Localization.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Imported">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ManagedDataPath)\Imported.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Rewired.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ManagedDataPath)\Rewired_Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GameLoft.Common">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ManagedDataPath)\GameLoft.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 
   <!-- Add Unity references -->

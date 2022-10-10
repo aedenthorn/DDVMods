@@ -11,7 +11,7 @@ namespace SprintMod
 {
     public class MyUpdater : MonoBehaviour
     {
-        private InputAction action;
+        private PlayerAvatar avatar;
         public MyUpdater()
         {
             //action = new InputAction(new InputTriggerDown(), new UnityInputProvider());
@@ -21,8 +21,11 @@ namespace SprintMod
             if (!BepInExPlugin.modEnabled.Value)
                 return;
 
-            var a = FindObjectOfType<PlayerAvatar>();
-            if (a is null)
+            if (avatar is null)
+            {
+                avatar = FindObjectOfType<PlayerAvatar>();
+            }
+            if (avatar is null)
                 return;
             try
             {
@@ -32,7 +35,7 @@ namespace SprintMod
                 //}
 
                 //a.transform.position += a.GetComponent<Animator>().velocity * 5;
-                var animator = a.GetComponent<Animator>();
+                var animator = avatar.GetComponent<Animator>();
                 if (animator == null)
                     return;
 
@@ -43,14 +46,14 @@ namespace SprintMod
                 var clipName = currentClipInfo[0].clip.name;
                 if (clipName == null)
                     return;
-                if (clipName.StartsWith("locomotion_run"))
+                if (clipName.StartsWith("locomotion_run") && Input.GetKey(BepInExPlugin.modKey.Value))
                 {
-                    a.RunSpeedMultiplier = BepInExPlugin.multiplier.Value;
+                    avatar.RunSpeedMultiplier = BepInExPlugin.multiplier.Value;
                     animator.speed = 1 / BepInExPlugin.multiplier.Value;
                 }
                 else
                 {
-                    a.RunSpeedMultiplier = 1;
+                    avatar.RunSpeedMultiplier = 1;
                     animator.speed = 1;
                 }
             }
