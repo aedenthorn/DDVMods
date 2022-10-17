@@ -16,11 +16,12 @@ using static Mdl.InputSystem.RewiredInputProvider;
 
 namespace PickupMultiplier
 {
-    [BepInPlugin("aedenthorn.PickupMultiplier", "PickupMultiplier", "0.1.0")]
+    [BepInPlugin("aedenthorn.PickupMultiplier", "PickupMultiplier", "0.2.0")]
     public class BepInExPlugin : BasePlugin
     {
         public static ConfigEntry<bool> modEnabled;
         public static ConfigEntry<bool> isDebug;
+        public static ConfigEntry<bool> reverseToggle;
         public static ConfigEntry<KeyCode> modKey;
         public static ConfigEntry<int> pickupMultiplier;
 
@@ -38,7 +39,8 @@ namespace PickupMultiplier
             context = this;
             modEnabled = Config.Bind("General", "Enabled", true, "Enable this mod");
             isDebug = Config.Bind<bool>("General", "IsDebug", true, "Enable debug logs");
-            modKey = Config.Bind<KeyCode>("General", "ModKey", KeyCode.LeftShift, "Hold down this key to multiply");
+            reverseToggle = Config.Bind<bool>("Options", "ReverseToggle", false, "If true, holding down the mod key turns off the behaviour instead.");
+            modKey = Config.Bind<KeyCode>("Options", "ModKey", KeyCode.LeftShift, "Hold down this key to multiply");
             pickupMultiplier = Config.Bind<int>("Options", "PickupMultiplier", 2, "Multiply picked up items by this amount");
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), null);
@@ -49,9 +51,9 @@ namespace PickupMultiplier
         {
             static void Prefix(Item item, ref int amount)
             {
-                if (!modEnabled.Value || !Input.GetKey(modKey.Value))
+                if (!modEnabled.Value || reverseToggle.Value == Input.GetKey(modKey.Value))
                     return;
-                Dbgl($"multiplying item {item.GetLocalizedDisplayName(LocalizationManager.LocalizatorInstance)} ({amount} by {pickupMultiplier.Value} (for display)");
+                Dbgl($"multiplying item {item.GetLocalizedDisplayName(LocalizationManager.LocalizatorInstance)} ({amount}) by {pickupMultiplier.Value} (for display)");
                 amount *= pickupMultiplier.Value;
             }
         }
@@ -60,7 +62,7 @@ namespace PickupMultiplier
         {
             static void Prefix(Item item, ref int amount)
             {
-                if (!modEnabled.Value || !(Input.GetKey(modKey.Value)))
+                if (!modEnabled.Value || reverseToggle.Value == Input.GetKey(modKey.Value))
                     return;
                 Dbgl($"multiplying item {item.GetLocalizedDisplayName(LocalizationManager.LocalizatorInstance)} ({amount}) by {pickupMultiplier.Value} (#1)");
                 amount *= pickupMultiplier.Value;
@@ -71,7 +73,7 @@ namespace PickupMultiplier
         {
             static void Prefix(Item item, ref int amount)
             {
-                if (!modEnabled.Value || !Input.GetKey(modKey.Value))
+                if (!modEnabled.Value || reverseToggle.Value == Input.GetKey(modKey.Value))
                     return;
                 Dbgl($"multiplying item {item.GetLocalizedDisplayName(LocalizationManager.LocalizatorInstance)} ({amount}) by {pickupMultiplier.Value} (#2)");
                 amount *= pickupMultiplier.Value;

@@ -34,8 +34,6 @@ namespace SprintMod
             multiplier = Config.Bind<float>("General", "Multiplier", 2f, "Multiplier");
             modKey = Config.Bind<KeyCode>("General", "ModKey", KeyCode.LeftAlt, "Hold down this key to multiply");
 
-            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), null);
-
             AddComponent<MyUpdater>();
             Dbgl("mod loaded");
         }

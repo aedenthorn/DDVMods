@@ -14,9 +14,9 @@ using System.Reflection;
 using UnityEngine;
 using static Mdl.InputSystem.RewiredInputProvider;
 
-namespace UnlockAllClothing
+namespace SpawnItem
 {
-    [BepInPlugin("aedenthorn.UnlockAllClothing", "UnlockAllClothing", "0.1.0")]
+    [BepInPlugin("aedenthorn.SpawnItem", "SpawnItem", "0.1.0")]
     public class BepInExPlugin : BasePlugin
     {
         public static ConfigEntry<bool> modEnabled;
@@ -38,7 +38,7 @@ namespace UnlockAllClothing
             context = this;
             modEnabled = Config.Bind("General", "Enabled", true, "Enable this mod");
             isDebug = Config.Bind<bool>("General", "IsDebug", true, "Enable debug logs");
-            modKey = Config.Bind<KeyCode>("General", "ModKey", KeyCode.Home, "Press this key to unlock");
+            modKey = Config.Bind<KeyCode>("General", "ModKey", KeyCode.F1, "Press this key to toggle spawner");
 
             AddComponent<MyUpdater>();
             Dbgl("mod loaded");
