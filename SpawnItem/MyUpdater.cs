@@ -14,13 +14,16 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using HarmonyLib;
 using System.IO;
+using System.Reflection;
+using Definitions.Util;
+using Definitions.Rewards;
 
 namespace SpawnItem
 {
     public class MyUpdater : MonoBehaviour
     {
         public Dictionary<ItemType, List<string>> items = new Dictionary<ItemType, List<string>>();
-        private bool spawning = true;
+        private bool spawning = false;
         private string nameString = "";
         private string lastNameString = "";
         public List<string> candidates = new List<string>();
@@ -45,7 +48,6 @@ namespace SpawnItem
 
         public void Update()
         {
-
             if(root is null)
             {
                 root = FindObjectOfType<BaseUiRoot>();
@@ -71,15 +73,11 @@ namespace SpawnItem
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Slash))
+            if (Input.GetKeyDown(BepInExPlugin.toggleKey.Value))
             {
                 spawning = !spawning;
 
                 BepInExPlugin.Dbgl($"spawner active: {spawning}");
-            }
-            if (Input.GetKeyDown(KeyCode.Semicolon))
-            {
-                DumpItems();
             }
         }
 
@@ -109,6 +107,13 @@ namespace SpawnItem
                     SpawnItem();
                 }
                 GUILayout.EndVertical();
+                GUILayout.BeginVertical(style, new GUILayoutOption[] { GUILayout.Width(200), GUILayout.Height(50) });
+                GUILayout.Label("", style, new GUILayoutOption[] { GUILayout.Height(25) });
+                if (GUILayout.Button("Dump", new GUILayoutOption[] { GUILayout.Width(100), GUILayout.Height(25) }))
+                {
+                    DumpItems();
+                }
+                GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
                 if(!string.IsNullOrEmpty(nameString) && nameString != lastNameString)
                 {
@@ -135,7 +140,6 @@ namespace SpawnItem
             }
             else
             {
-                Cursor.visible = false;
             }
         }
 
@@ -165,7 +169,11 @@ namespace SpawnItem
                     if(item.Name == nameString)
                     {
                         BepInExPlugin.Dbgl($"Spawning {amount} {nameString} of type {type.ToString()}");
-                        client.Profile.Player.Backpack.AddItem(item.Item, amount, client.Profile.HangoutState.dispatcher);
+                        ItemReward ir = ItemReward.New(item.Item, 1);
+
+                        PlayerProfile profile = client.MetaClient.NetworkData.GetPlayer(client.Profile, client.Profile.HangoutState.dispatcher);
+                        client.Profile.Definitions_Rewards_IRewardRecipient_AddItem(item.Item, 1, profile.Dispatcher, client.Profile.HangoutState.context, new Nullable<Item>(), ir.State, true);
+                        //client.Profile.Player.Backpack.AddItem(item.Item, amount, client.Profile.HangoutState.dispatcher);
                         return;
                     }
                 }
@@ -174,18 +182,23 @@ namespace SpawnItem
         }
         public void DumpItems()
         {
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SpawnItem");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
             foreach (var type in items.Keys)
             {
                 List<string> list = new List<string>();
                 var all = new List<IItemData>(ItemDatabase.Instance.GetAllByType(type));
                 foreach (var item in all)
                 {
-                    list.Add($"{item.Name}:{item.ID}");
+                    list.Add($"{item.Name}");
                 }
                 var fn = ((ItemType)type).ToString();
-                File.WriteAllLines($"{fn}.txt", list.ToArray());
-                BepInExPlugin.Dbgl($"dumped {list.Count} items to {fn}.txt");
+                File.WriteAllLines(Path.Combine(path, $"{fn}.txt"), list.ToArray());
             }
+            BepInExPlugin.Dbgl($"dumped item lists to {path}");
         }
     }
 }
