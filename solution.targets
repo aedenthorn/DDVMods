@@ -118,6 +118,11 @@
       <HintPath>$(ManagedDataPath)\Localization.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Localization.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(ManagedDataPath)\Localization.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Imported">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(ManagedDataPath)\Imported.dll</HintPath>

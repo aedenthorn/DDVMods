@@ -16,7 +16,7 @@ using static Mdl.InputSystem.RewiredInputProvider;
 
 namespace PickupMultiplier
 {
-    [BepInPlugin("aedenthorn.PickupMultiplier", "PickupMultiplier", "0.2.0")]
+    [BepInPlugin("aedenthorn.PickupMultiplier", "PickupMultiplier", "0.3.0")]
     public class BepInExPlugin : BasePlugin
     {
         public static ConfigEntry<bool> modEnabled;
