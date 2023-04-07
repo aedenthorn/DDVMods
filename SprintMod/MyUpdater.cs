@@ -12,6 +12,7 @@ namespace SprintMod
     public class MyUpdater : MonoBehaviour
     {
         private PlayerAvatar avatar;
+        private Dictionary<int, float[]> defaultSpeeds = new Dictionary<int, float[]>();
         public MyUpdater()
         {
             //action = new InputAction(new InputTriggerDown(), new UnityInputProvider());
@@ -48,13 +49,22 @@ namespace SprintMod
                     return;
                 if (clipName.StartsWith("locomotion_run") && Input.GetKey(BepInExPlugin.modKey.Value))
                 {
+                    avatar.moveSpeedMultiplier = BepInExPlugin.multiplier.Value;
                     avatar.RunSpeedMultiplier = BepInExPlugin.multiplier.Value;
                     animator.speed = 1 / BepInExPlugin.multiplier.Value;
                 }
                 else
                 {
-                    avatar.RunSpeedMultiplier = 1;
-                    animator.speed = 1;
+                    if(defaultSpeeds.TryGetValue(avatar.GetInstanceID(), out float[] speeds))
+                    {
+                        avatar.RunSpeedMultiplier = speeds[0];
+                        avatar.moveSpeedMultiplier = speeds[1];
+                        animator.speed = speeds[2];
+                    }
+                    else
+                    {
+                        defaultSpeeds[avatar.GetInstanceID()] = new float[] { avatar.RunSpeedMultiplier, avatar.moveSpeedMultiplier, animator.speed };
+                    }
                 }
             }
             catch { }
